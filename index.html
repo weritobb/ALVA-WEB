@@ -117,10 +117,11 @@
           <div class="boardtop">
             <h3>Mi pizarrón</h3>
             <div class="tools">
-              <button id="pen" class="active">✏ Lápiz</button>
-              <button id="eraser">Borrador</button>
-              <button id="clear">Limpiar</button>
-            </div>
+  <button id="pen" class="active">✏ Lápiz</button>
+  <button id="eraser">Borrador</button>
+  <button id="clear">Limpiar</button>
+  <button id="readBoard">Leer pizarrón</button>
+</div>
           </div>
           <canvas id="board"></canvas>
           <p class="hint" style="margin:9px 2px 0">Escribe o dibuja tu procedimiento con el mouse o la pantalla táctil.</p>
@@ -289,6 +290,58 @@
     });
     window.addEventListener('resize', resizeBoard);
     resizeBoard();
+
+  // Leer el contenido del pizarrón con inteligencia artificial
+document.getElementById('readBoard').addEventListener('click', async () => {
+  const readButton = document.getElementById('readBoard');
+
+  readButton.disabled = true;
+  readButton.textContent = 'Leyendo...';
+
+  try {
+    const imagen = canvas.toDataURL('image/png');
+
+    const response = await fetch(
+      'https://alva-algebra-servidor.onrender.com/api/leer-pizarron',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ imagen })
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'No se pudo leer el pizarrón.');
+    }
+
+    if (!data.ecuacion || data.ecuacion === 'NO_RECONOCIDO') {
+      addMessage(
+        'No pude reconocer el ejercicio. Intenta escribirlo más claramente.',
+        'bot'
+      );
+      return;
+    }
+
+    question.value = data.ecuacion;
+
+    addMessage(
+      'Creo que escribiste: ' + data.ecuacion +
+      '\n\nHe colocado el ejercicio en el cuadro de texto. Revísalo y pulsa Enviar pregunta para resolverlo.',
+      'bot'
+    );
+
+  } catch (error) {
+    addMessage('No pude leer el pizarrón: ' + error.message, 'bot');
+  } finally {
+    readButton.disabled = false;
+    readButton.textContent = 'Leer pizarrón';
+  }
+});  
+  
   </script>
 </body>
 </html>
