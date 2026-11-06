@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f2ec">
+  <title>ALVA Algebra | Tu tutora de álgebra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
+  <style>
+    :root {
+      --ink:#292b35; --muted:#777987; --paper:#f5f2ec; --white:#fffefa;
+      --lav:#e9e4f7; --lav-deep:#7566a8; --peach:#f4dfd1; --sage:#dce8dc;
+      --line:#e8e3dc; --shadow:0 16px 45px rgba(54,48,68,.09);
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:var(--paper); font-family:"DM Sans",sans-serif; }
+    button,textarea { font:inherit; }
+    .app { min-height:100vh; display:flex; flex-direction:column; max-width:1180px; margin:auto; padding:24px 28px 28px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:28px; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .logo { width:44px; height:44px; border-radius:15px; display:grid; place-items:center; background:var(--lav); color:var(--lav-deep); font:800 21px Manrope,sans-serif; }
+    .brand h1 { font:800 20px Manrope,sans-serif; margin:0; letter-spacing:-.5px; }
+    .brand p { margin:2px 0 0; color:var(--muted); font-size:12px; }
+    .status { display:flex; align-items:center; gap:8px; padding:9px 13px; background:var(--white); border:1px solid var(--line); border-radius:999px; color:#626675; font-size:12px; }
+    .dot { width:8px; height:8px; border-radius:50%; background:#7da887; }
+    main { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(300px,.95fr); gap:22px; flex:1; }
+    .welcome { padding:28px 30px; border-radius:25px; background:var(--lav); min-height:205px; position:relative; overflow:hidden; }
+    .eyebrow { color:#7566a8; text-transform:uppercase; letter-spacing:1.7px; font-size:10px; font-weight:700; }
+    .welcome h2 { font:800 clamp(25px,4vw,38px) Manrope,sans-serif; letter-spacing:-1.2px; max-width:470px; line-height:1.12; margin:13px 0 10px; }
+    .welcome p { color:#666477; max-width:470px; line-height:1.55; font-size:14px; margin:0; }
+    .spark { position:absolute; right:35px; bottom:10px; font-size:76px; opacity:.22; transform:rotate(-12deg); }
+    .workspace { display:grid; grid-template-columns:1fr; gap:18px; align-content:start; }
+    .card { background:var(--white); border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow); overflow:hidden; }
+    .card-head { display:flex; justify-content:space-between; align-items:center; padding:17px 19px; border-bottom:1px solid var(--line); }
+    .card-head h3 { margin:0; font:700 15px Manrope,sans-serif; }
+    .tag { padding:5px 9px; border-radius:999px; background:var(--sage); color:#54725a; font-size:10px; font-weight:700; }
+    .chat { display:flex; flex-direction:column; min-height:440px; }
+    #messages { padding:18px; display:flex; flex-direction:column; gap:12px; height:345px; overflow:auto; }
+    .msg { padding:11px 14px; border-radius:15px; max-width:90%; white-space:pre-wrap; overflow-wrap:anywhere; line-height:1.55; font-size:13px; }
+    .msg.bot { align-self:flex-start; background:#f0edf7; border-bottom-left-radius:5px; }
+    .msg.user { align-self:flex-end; background:#e5eee4; border-bottom-right-radius:5px; }
+    .composer { padding:13px 15px 15px; border-top:1px solid var(--line); }
+    .composer textarea { display:block; resize:vertical; width:100%; min-height:55px; max-height:130px; border:1px solid var(--line); border-radius:13px; background:#fff; padding:12px; outline:none; color:var(--ink); font-size:13px; }
+    .composer textarea:focus { border-color:#b7acd9; box-shadow:0 0 0 3px rgba(117,102,168,.1); }
+    .sendrow { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:10px; }
+    .hint { color:var(--muted); font-size:10px; }
+    .primary { border:0; border-radius:11px; padding:10px 16px; background:#7566a8; color:white; cursor:pointer; font-weight:700; font-size:12px; }
+    .primary:disabled { opacity:.55; cursor:wait; }
+    .side { display:flex; flex-direction:column; gap:18px; }
+    .study-card { padding:20px; background:var(--white); border:1px solid var(--line); border-radius:22px; }
+    .study-card h3 { margin:0 0 8px; font:700 15px Manrope,sans-serif; }
+    .study-card p { margin:0; color:var(--muted); line-height:1.55; font-size:12px; }
+    .quick { display:flex; flex-wrap:wrap; gap:8px; margin-top:15px; }
+    .quick button,.tool { border:1px solid var(--line); background:#fff; color:#555765; border-radius:999px; padding:8px 11px; font-size:11px; cursor:pointer; }
+    .quick button:hover,.tool:hover { background:#f0edf7; border-color:#d8d0eb; }
+    .board { background:var(--white); border:1px solid var(--line); border-radius:22px; padding:17px; }
+    .boardtop { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:12px; }
+    .boardtop h3 { margin:0; font:700 15px Manrope,sans-serif; }
+    .tools { display:flex; flex-wrap:wrap; gap:6px; }
+    .tools button { border:1px solid var(--line); background:white; border-radius:8px; padding:7px 9px; cursor:pointer; font-size:11px; color:#555765; }
+    .tools button.active { background:var(--lav); border-color:#cfc5e7; color:#655695; }
+    #board { display:block; width:100%; height:230px; border:1px solid #e7e3dc; border-radius:12px; background:#fff; touch-action:none; cursor:crosshair; }
+    footer { text-align:center; color:#92929a; font-size:10px; padding-top:20px; }
+    .error { color:#a14d4d; }
+    @media(max-width:800px) { .app{padding:17px 14px} main{grid-template-columns:1fr} header{margin-bottom:18px} .welcome{min-height:180px} .side{order:2} }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="logo">A</div>
+        <div><h1>ALVA Algebra</h1><p>Tu espacio para aprender paso a paso</p></div>
+      </div>
+      <div class="status"><span class="dot"></span> Tutora de álgebra</div>
+    </header>
+
+    <main>
+      <section class="workspace">
+        <div class="welcome">
+          <div class="eyebrow">Aprende a tu ritmo</div>
+          <h2>¡Hola! Soy ALVA, tu tutora de álgebra.</h2>
+          <p>Cuéntame qué ejercicio estás resolviendo. Lo trabajaremos paso a paso y con explicaciones claras.</p>
+          <div class="spark">✳</div>
+        </div>
+
+        <section class="card chat">
+          <div class="card-head"><h3>Conversación con ALVA</h3><span class="tag">Álgebra</span></div>
+          <div id="messages" aria-live="polite">
+            <div class="msg bot">¡Hola! ¿En qué problema de álgebra necesitas ayuda?</div>
+          </div>
+          <div class="composer">
+            <textarea id="question" placeholder="Escribe tu problema aquí... (por ejemplo: 2x + 4 = 10)"></textarea>
+            <div class="sendrow">
+              <span class="hint">Presiona Enter para enviar · Shift + Enter para nueva línea</span>
+              <button class="primary" id="send">Enviar pregunta ↗</button>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <aside class="side">
+        <section class="study-card">
+          <h3>¿Qué vamos a resolver hoy?</h3>
+          <p>ALVA puede ayudarte con ecuaciones, despejes, operaciones algebraicas y sistemas de ecuaciones.</p>
+          <div class="quick">
+            <button data-q="Resuelve 3x + 5 = 20">Ecuaciones</button>
+            <button data-q="Explícame cómo despejar una variable">Despejes</button>
+            <button data-q="Resuelve este sistema: x + y = 10; x - y = 2">Sistemas</button>
+          </div>
+        </section>
+
+        <section class="board">
+          <div class="boardtop">
+            <h3>Mi pizarrón</h3>
+            <div class="tools">
+              <button id="pen" class="active">✏ Lápiz</button>
+              <button id="eraser">Borrador</button>
+              <button id="clear">Limpiar</button>
+            </div>
+          </div>
+          <canvas id="board"></canvas>
+          <p class="hint" style="margin:9px 2px 0">Escribe o dibuja tu procedimiento con el mouse o la pantalla táctil.</p>
+        </section>
+      </aside>
+    </main>
+    <footer>ALVA Algebra · Asistente educativo</footer>
+  </div>
+
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js"></script>
+  <script>
+    const API_URL = 'https://alva-algebra-servidor.onrender.com/api/algebra';
+    const messages = document.getElementById('messages');
+    const question = document.getElementById('question');
+    const sendButton = document.getElementById('send');
+
+    function addMessage(text, type) {
+      const item = document.createElement('div');
+      item.className = 'msg ' + type;
+      item.textContent = text;
+      messages.appendChild(item);
+      messages.scrollTop = messages.scrollHeight;
+      if (type === 'bot') {
+        const render = () => {
+          if (window.renderMathInElement) {
+            renderMathInElement(item, {
+              delimiters: [
+                {left:'\\[',right:'\\]',display:true},
+                {left:'\\(',right:'\\)',display:false},
+                {left:'$$',right:'$$',display:true},
+                {left:'$',right:'$',display:false}
+              ],
+              throwOnError:false,
+              ignoredTags:['script','noscript','style','textarea','pre','code']
+            });
+          }
+        };
+        if (window.renderMathInElement) render();
+        else window.addEventListener('load', render, {once:true});
+      }
+      return item;
+    }
+
+    async function sendQuestion(text) {
+      const prompt = (text || question.value).trim();
+      if (!prompt) return;
+      addMessage(prompt, 'user');
+      question.value = '';
+      sendButton.disabled = true;
+      const loading = addMessage('ALVA está pensando...', 'bot');
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pregunta: prompt })
+        });
+        let data = {};
+        try { data = await response.json(); } catch (_) {}
+        if (!response.ok) {
+          throw new Error(data.error || 'Error del servidor: ' + response.status);
+        }
+        loading.textContent = data.respuesta || 'El servidor no devolvió una respuesta.';
+        if (window.renderMathInElement) {
+          renderMathInElement(loading, {
+            delimiters: [
+              {left:'\\[',right:'\\]',display:true},
+              {left:'\\(',right:'\\)',display:false},
+              {left:'$$',right:'$$',display:true},
+              {left:'$',right:'$',display:false}
+            ],
+            throwOnError:false,
+            ignoredTags:['script','noscript','style','textarea','pre','code']
+          });
+        }
+        messages.scrollTop = messages.scrollHeight;
+      } catch (error) {
+        loading.textContent = 'No pude conectar con el servidor. ' + error.message +
+          ' Si aparece un error de CORS, habrá que habilitar el acceso desde esta página en Render.';
+        loading.classList.add('error');
+      } finally {
+        sendButton.disabled = false;
+        question.focus();
+      }
+    }
+
+    sendButton.addEventListener('click', () => sendQuestion());
+    question.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendQuestion();
+      }
+    });
+    document.querySelectorAll('[data-q]').forEach(button => {
+      button.addEventListener('click', () => sendQuestion(button.dataset.q));
+    });
+
+    // Pizarrón de dibujo
+    const canvas = document.getElementById('board');
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let tool = 'pen';
+
+    function resizeBoard() {
+      const old = document.createElement('canvas');
+      old.width = canvas.width || 1;
+      old.height = canvas.height || 1;
+      old.getContext('2d').drawImage(canvas, 0, 0);
+      const rect = canvas.getBoundingClientRect();
+      const ratio = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.round(rect.width * ratio));
+      canvas.height = Math.max(1, Math.round(rect.height * ratio));
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#292b35';
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, rect.width, rect.height);
+      if (old.width > 1 && old.height > 1) {
+        ctx.drawImage(old, 0, 0, old.width, old.height, 0, 0, rect.width, rect.height);
+      }
+    }
+    function position(event) {
+      const rect = canvas.getBoundingClientRect();
+      return {x:event.clientX-rect.left, y:event.clientY-rect.top};
+    }
+    canvas.addEventListener('pointerdown', event => {
+      event.preventDefault();
+      drawing = true;
+      canvas.setPointerCapture(event.pointerId);
+      const p = position(event);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(p.x + .1, p.y + .1);
+      ctx.stroke();
+    });
+    canvas.addEventListener('pointermove', event => {
+      if (!drawing) return;
+      event.preventDefault();
+      const p = position(event);
+      ctx.lineWidth = tool === 'eraser' ? 22 : 3;
+      ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : '#292b35';
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+    });
+    ['pointerup','pointercancel','lostpointercapture'].forEach(name => {
+      canvas.addEventListener(name, () => { drawing = false; });
+    });
+    document.getElementById('pen').addEventListener('click', () => {
+      tool = 'pen';
+      document.getElementById('pen').classList.add('active');
+      document.getElementById('eraser').classList.remove('active');
+    });
+    document.getElementById('eraser').addEventListener('click', () => {
+      tool = 'eraser';
+      document.getElementById('eraser').classList.add('active');
+      document.getElementById('pen').classList.remove('active');
+    });
+    document.getElementById('clear').addEventListener('click', () => {
+      const rect = canvas.getBoundingClientRect();
+      ctx.clearRect(0, 0, rect.width, rect.height);
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, rect.width, rect.height);
+    });
+    window.addEventListener('resize', resizeBoard);
+    resizeBoard();
+  </script>
+</body>
+</html>
